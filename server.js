@@ -1,6 +1,6 @@
-import { WebSocketServer } from 'ws';
+const websocket = require('ws');
 
-const wss = new WebSocketServer({ port: 8082 });
+const wss = new websocket.WebSocketServer({ port: 8082 });
 let userClientMap = {} 
 
 wss.on('connect', function connection(ws, req) {
