@@ -3,6 +3,13 @@ const websocket = require('ws');
 const wss = new websocket.WebSocketServer({ port: 8082 });
 let userClientMap = {} 
 
-wss.on('connect', function connection(ws, req) {
-    console.log(`WS:\n${ws}\n\nREQ:\n${req}\n\nREQ.BODY??\n${req.body}`);
+wss.on('connection', function connection(ws, req) {
+    console.log("established connection");
+    ws.send("CONNECTION ESTABLISHED");
+    ws.on('error', console.error);
+
+    ws.on('message', (data) => {
+        console.log("Recieved message: " + data);
+        ws.send("pong");
+    });
 })
