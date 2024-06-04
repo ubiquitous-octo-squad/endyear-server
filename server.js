@@ -43,6 +43,8 @@ wss.on('connection', (ws) => {
     });
 
     ws.on('close', () => {
-        //TODO: userclientmap cleaning
+        Object.keys(userClientMap).forEach((id) => {
+            if (userClientMap[id] === ws) delete userClientMap[id];
+        })
     });
 });
