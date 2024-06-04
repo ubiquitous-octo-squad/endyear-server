@@ -28,8 +28,13 @@ app.http('sendMessage', {
             var poolConnection = await sql.connect(config);
             context.log(request);
 
-            await poolConnection.request().query(`INSERT INTO Messages (msg, sender)
-            VALUES ('${request.query.get('message')}', '${request.query.get('sender')}');`);
+            // SQLI-Proof
+            let result = await poolConnection.request()
+                .input('text', sql.VarChar(255), request.body.message) // it may be sql.VarChar (no parentheses) instead of sql.VarChar(255). Needs to be tested.
+                .input('sender', sql.Int, request.body.sender)
+                .input('chatId', sql.Int, request.body.chatId)
+                .query(`INSERT INTO msg(text, sender, chat)
+                VALUES (@text, @sender, @chatId);`);
 
             poolConnection.close();
         } catch (err) {
