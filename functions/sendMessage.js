@@ -29,12 +29,20 @@ app.http('sendMessage', {
             context.log(request);
 
             // SQLI-Proof
-            let result = await poolConnection.request()
+
+            // DOES NOT RETURN
+            await poolConnection.request()
                 .input('text', sql.VarChar(255), request.body.message) // it may be sql.VarChar (no parentheses) instead of sql.VarChar(255). Needs to be tested.
                 .input('sender', sql.Int, request.body.sender)
                 .input('chatId', sql.Int, request.body.chatId)
                 .query(`INSERT INTO msg(text, sender, chat)
                 VALUES (@text, @sender, @chatId);`);
+            
+            // RETURN THIS (username of sender, reduces # of functions and connections made)
+            let result = await poolConnection.request()
+                .input('id', sql.Int, request.body.sender)
+                .query(`SELECT username FROM person
+                WHERE id = @id`);
 
             poolConnection.close();
         } catch (err) {
@@ -44,6 +52,6 @@ app.http('sendMessage', {
 
         //const name = request.query.get('name') || await request.text() || 'world';
 
-        return { body: `success` };
+        return result;
     }
 });

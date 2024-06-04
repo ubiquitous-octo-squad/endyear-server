@@ -6,7 +6,6 @@ CREATE TABLE person(
     email VARCHAR(255) NOT NULL,
     username VARCHAR(255) NOT NULL,
     password VARCHAR(255) NOT NULL,
-    pfp VARCHAR(65535) NOT NULL, /* store in data:image format, might need to make larger */
     status ENUM('Offline', 'Online', 'Do Not Disturb') NOT NULL
 );
 
@@ -56,5 +55,11 @@ DELETE FROM token WHERE expire < GETDATE();
 /* token validation check, will (hopefully) return nothing when token is expired */
 SELECT id FROM token
 JOIN person ON token.person = person.id
-WHERE token = ? AND expire < GETDATE();
--- the ? represents a value that will be passed in (the token the user sends)
+WHERE token = @tokenString AND expire < GETDATE();
+-- tokenString can be edited (https://stackoverflow.com/questions/36840439/node-mssql-how-to-use-the-built-in-sql-injection-protection)
+
+/* get users in chat */
+
+SELECT person_id FROM chat_person
+WHERE chat_id = @chatId
+-- chatId can be edited (see above stackoverflow link)
