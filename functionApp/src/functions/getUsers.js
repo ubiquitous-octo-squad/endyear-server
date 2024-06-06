@@ -18,7 +18,7 @@ const config = {
     }
 }
 
-app.http('sendMessage', {
+app.http('getUsers', {
     methods: ['GET', 'POST'],
     authLevel: 'anonymous',
     handler: async (request, context) => {

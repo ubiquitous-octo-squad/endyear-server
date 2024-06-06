@@ -6,7 +6,6 @@ CREATE TABLE person(
     email VARCHAR(255) NOT NULL,
     username VARCHAR(255) NOT NULL,
     password VARCHAR(255) NOT NULL,
-    status ENUM('Offline', 'Online', 'Do Not Disturb') NOT NULL
 );
 
 /* for now just one chat, but later important. only needs an id and name but is referenced a lot */
