@@ -30,6 +30,18 @@ app.http('sendMessage', {
 
             // SQLI-Proof
 
+            
+            // Check if user is allowed to send a message into the specified chat
+            let check = poolConnection.request()
+                .input('chatId', sql.Int, request.body.chatId)
+                .input('sender', sql.Int, request.body.sender)
+                .query(`SELECT * FROM chat_person
+                WHERE chat = @chatId
+                AND person = @sender`);
+            
+            if (!check.data?.recordset?.[0]) return { body: `Error: user attempted to send a message to an invalid chat` } // temp error message
+
+            
             // DOES NOT RETURN
             await poolConnection.request()
                 .input('text', sql.VarChar(255), request.body.message) // it may be sql.VarChar (no parentheses) instead of sql.VarChar(255). Needs to be tested.

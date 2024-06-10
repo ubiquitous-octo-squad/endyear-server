@@ -34,7 +34,8 @@ wss.on('connection', (ws) => {
                     u.array.forEach(user => { // VSCode added the .array, may not be wanted.
                         userClientMap[user.id].send(JSON.stringify({
                             messageText: data.body.message,
-                            sender: senderName
+                            sender: senderName,
+                            chat: data.body.chatId
                         }))
                     });
                 });
