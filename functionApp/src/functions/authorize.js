@@ -30,7 +30,7 @@ app.http('authorize', {
             context.log(request);
             context.log(request.query.get("tokenString"))
             x = await poolConnection.request()
-                .input('tokenString', sql.VarChar(255), request.body.tokenString) // may be VarChar and not VarChar(255)
+                .input('tokenString', sql.VarChar(255), request.query.get("tokenString")) // may be VarChar and not VarChar(255)
                 .query(`SELECT id FROM token JOIN person ON token.person = person.id WHERE token = @tokenString`);
             context.log(x);
             poolConnection.close();
