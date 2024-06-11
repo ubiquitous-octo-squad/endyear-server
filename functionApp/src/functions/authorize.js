@@ -34,13 +34,9 @@ app.http('authorize', {
                 .query(`SELECT id FROM token JOIN person ON token.person = person.id WHERE token = @tokenString`);
             context.log(x);
             poolConnection.close();
+            return x;
         } catch (err) {
             return { body: `failure. Error is ${err}` }
         }
-
-
-        //const name = request.query.get('name') || await request.text() || 'world';
-
-        return { body: JSON.stringify(x) };
     }
 });
