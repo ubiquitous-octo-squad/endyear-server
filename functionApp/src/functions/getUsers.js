@@ -30,11 +30,12 @@ app.http('getUsers', {
 
             // SQLI-Proof
             let result = await poolConnection.request()
-                .input('chatId', sql.Int, request.body.chatId)
+                .input('chatId', sql.Int, parseInt(request.query.get("chatId")))
                 .query(`SELECT person_id FROM chat_person
                 WHERE chat_id = @chatId`);
 
             poolConnection.close();
+            return result;
         } catch (err) {
             return { body: `failure. Error is ${err}` }
         }
@@ -42,6 +43,6 @@ app.http('getUsers', {
 
         //const name = request.query.get('name') || await request.text() || 'world';
 
-        return result;
+        
     }
 });
