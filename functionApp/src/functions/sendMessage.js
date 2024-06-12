@@ -39,9 +39,9 @@ app.http('sendMessage', {
                 WHERE chat = @chatId
                 AND person = @sender`);
             
-            if (!check.data?.recordset?.[0]) return { body: `Error: user attempted to send a message to an invalid chat` } // temp error message
+            if (!check.data?.recordset.includes(request.query.get("sender"))) return { body: `Error: user attempted to send a message to an invalid chat` } // temp error message
 
-            
+
             // DOES NOT RETURN
             await poolConnection.request()
                 .input('text', sql.VarChar(255), request.body.message) // it may be sql.VarChar (no parentheses) instead of sql.VarChar(255). Needs to be tested.

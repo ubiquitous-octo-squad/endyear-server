@@ -11,32 +11,48 @@ wss.on('connection', (ws) => {
         let data = JSON.parse(message);
         switch (data.req_type) {
             case "authentication":
-                let user;
-                axios.post(`https://messagehandlers.azurewebsites.net/api/authorize?tokenString=${data.body.token}`).then((d) => user = d.data?.recordset?.[0]?.id).then(()=>{
-                    if (!user) {ws.close(); return};
-                    userClientMap[user] = ws;
+                axios.post(`https://messagehandlers.azurewebsites.net/api/authorize?tokenString=${data.body.token}`).then((id) => {
+                    if (!id) {ws.close(); console.log("faker smh"); return};
+                    userClientMap[id.data] = ws;
                     ws.send("authenticated"); // temp message; do something real here
                 });
                 break;
             case "send message":
                 // get id of sender
-                let sender;
-                axios.post(`https://messagehandlers.azurewebsites.net/api/authorize?tokenString=${data.body.token}`).then((d) => sender = d.data?.recordset?.[0]?.id).then(()=>{
-                    if (!sender) {ws.close(); return};
-                });
+                axios.post(`https://messagehandlers.azurewebsites.net/api/authorize?tokenString=${data.body.sender}`).then((d) => {
+                    let sender = d.data;
+                    if (!sender) {ws.close(); console.log("faker smh 2??"); return -1};
 
-                let senderName;
-                axios.post(`https://messagehandlers.azurewebsites.net/api/sendMessage?message=${data.body.message}&sender=${sender}&chatId=${data.body.chatId}`).then((d) => senderName = d.data?.recordset?.[0]?.username); // WARNING: may cause an issue if someone puts a slash (/) in their message due to URL handling. Fix later.
+                    let senderName;
+                    axios({
+                        method: 'post',
+                        url: `https://messagehandlers.azurewebsites.net/api/insertMessage?sender=${sender}&chatId=${data.body.chat}`,
+                        headers: {
+                            'text': data.body.message
+                        },
+                        data: {}
+                    }).then((d) => {
+                        senderName = d.data;
+                        if (!senderName) {ws.close(); console.log("invalid chat-user pairing"); return -1}
 
-                axios.post(`https://messagehandlers.azurewebsites.net/api/getUsers?chatId=${data.body.chatId}`).then((users) => {
-                    let u = users?.data?.recordset;
-                    if (!u) return;
-                    u.array.forEach(user => { // VSCode added the .array, may not be wanted.
-                        userClientMap[user.id].send(JSON.stringify({
-                            messageText: data.body.message,
-                            sender: senderName,
-                            chat: data.body.chatId
-                        }))
+
+                        axios.post(`https://messagehandlers.azurewebsites.net/api/getUsers?&chatId=${data.body.chat}`).then((users) => {
+                        let u = users.data.split(",");
+                        if (!u) { console.log('uh oh!'); return};
+                        u.forEach(user => {
+                            console.log(Object.keys(userClientMap))
+                            console.log(user)
+                            if (userClientMap[user]) {
+                                console.log("here!!  " + user)
+                                userClientMap[user].send(JSON.stringify({
+                                    messageText: data.body.message,
+                                    sender: senderName,
+                                    chat: data.body.chatId
+                                }))
+                            }
+                            
+                        });
+                      });
                     });
                 });
                 break;
