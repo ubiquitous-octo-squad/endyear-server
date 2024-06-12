@@ -36,25 +36,25 @@ wss.on('connection', (ws) => {
                         if (!senderName) {ws.close(); console.log("invalid chat-user pairing"); return -1}
 
 
-                        axios.post(`https://messagehandlers.azurewebsites.net/api/getUsers?&chatId=${data.body.chat}`).then((users) => {
+                        axios.post(`https://messagehandlers.azurewebsites.net/api/getUsers?chatId=${data.body.chat}`).then((users) => {
                         let u = users.data.split(",");
                         if (!u) { console.log('uh oh!'); return};
                         u.forEach(user => {
-                            console.log(Object.keys(userClientMap))
-                            console.log(user)
                             if (userClientMap[user]) {
-                                console.log("here!!  " + user)
                                 userClientMap[user].send(JSON.stringify({
-                                    messageText: data.body.message,
+                                    message: data.body.message,
                                     sender: senderName,
                                     chat: data.body.chatId
-                                }))
-                            }
-                            
+                                }));
+                            };
                         });
                       });
                     });
                 });
+                break;
+            case "fetch messages":
+                console.log(data)
+                axios.post(`https://messagehandlers.azurewebsites.net/api/fetchMessages?chatId=${data.body.chat}&tokenString=${data.body.token}`).then((d) => {console.log(d.data)});
                 break;
         };
     });
