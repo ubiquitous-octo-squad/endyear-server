@@ -43,7 +43,7 @@ wss.on('connection', (ws) => {
                             data: {}
                         }).then((d) => {
                             senderName = d.data;
-                            if (!senderName || senderName === "Error: user attempted to send a message to an invalid chat") {ws.close(); console.log("invalid chat-user pairing"); return -1}
+                            if (!senderName || senderName.startsWith("faliure. ") || senderName.startsWith("Error: ")) {ws.close(); console.log("invalid chat-user pairing"); return -1}
 
 
                             axios.post(`https://messagehandlers.azurewebsites.net/api/getUsers?chatId=${data.body.chat}`).then((users) => {
