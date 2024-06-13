@@ -68,7 +68,7 @@ wss.on('connection', (ws) => {
                     axios.post(`https://messagehandlers.azurewebsites.net/api/fetchMessages?chatId=${data.body.chat}&tokenString=${data.body.token}`).then((d) => {ws.send(JSON.stringify({chatData: d.data}))});
                     break;
                 case "fetch chats":
-                    axios.post(`https://messagehandlers.azurewebsites.net/api/getChats?tokenString=${data.body.token}`).then((d) => ws.send({chats: JSON.stringify(d.data)}));
+                    axios.post(`https://messagehandlers.azurewebsites.net/api/getChats?tokenString=${data.body.token}`).then((d) => ws.send(JSON.stringify({chats: d.data})));
                     break;
                 }
             } catch (e) {
