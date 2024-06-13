@@ -65,14 +65,17 @@ wss.on('connection', (ws) => {
                     break;
                 case "fetch messages":
                     console.log(data)
-                    axios.post(`https://messagehandlers.azurewebsites.net/api/fetchMessages?chatId=${data.body.chat}&tokenString=${data.body.token}`).then((d) => {console.log(d.data)});
+                    axios.post(`https://messagehandlers.azurewebsites.net/api/fetchMessages?chatId=${data.body.chat}&tokenString=${data.body.token}`).then((d) => {ws.send(JSON.parse({chatData: d.data}))});
+                    break;
+                case "fetch chats":
+                    axios.post(`https://messagehandlers.azurewebsites.net/api/getChats?tokenString=${data.body.token}`).then((d) => ws.send({chats: JSON.parse(d.data)}));
                     break;
                 }
             } catch (e) {
             ws.send(JSON.stringify({
                 error: e
             }))
-        
+            ws.close();
         };
     });
 

@@ -21,14 +21,14 @@ client.on('open', () => {
     }));
 
     // send example message (don't have in client.on('open'))
-    client.send(JSON.stringify({
-        req_type: "send message",
-        body: {
-            message: message,
-            sender: token, // use token to authorize sender because why not
-            chat: chatId
-        }
-    }))
+    // client.send(JSON.stringify({
+    //     req_type: "send message",
+    //     body: {
+    //         message: message,
+    //         sender: token, // use token to authorize sender because why not
+    //         chat: chatId
+    //     }
+    // }))
 
     // client.send(JSON.stringify({
     //     req_type: "fetch messages",
@@ -37,6 +37,13 @@ client.on('open', () => {
     //         token: token
     //     }
     // }))
+    
+    client.send(JSON.stringify({
+        req_type: "fetch chats",
+        body: {
+            token: token
+        }
+    }))
     console.log("client open");
 });
 
