@@ -13,30 +13,30 @@ let chatId = 1;
 client.on('error', console.error);
 
 client.on('open', () => {
-    // client.send(JSON.stringify({
-    //     req_type: "authentication", // include in every request
-    //     body: { // include data where necessary of any type
-    //         token: token
-    //     }
-    // }));
-
-    // // send example message (don't have in client.on('open'))
-    // client.send(JSON.stringify({
-    //     req_type: "send message",
-    //     body: {
-    //         message: message,
-    //         sender: token, // use token to authorize sender because why not
-    //         chat: chatId
-    //     }
-    // }))
-
     client.send(JSON.stringify({
-        req_type: "fetch messages",
-        body: {
-            chat: chatId,
+        req_type: "authentication", // include in every request
+        body: { // include data where necessary of any type
             token: token
         }
+    }));
+
+    // send example message (don't have in client.on('open'))
+    client.send(JSON.stringify({
+        req_type: "send message",
+        body: {
+            message: message,
+            sender: token, // use token to authorize sender because why not
+            chat: chatId
+        }
     }))
+
+    // client.send(JSON.stringify({
+    //     req_type: "fetch messages",
+    //     body: {
+    //         chat: chatId,
+    //         token: token
+    //     }
+    // }))
     console.log("client open");
 });
 
