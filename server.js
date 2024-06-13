@@ -53,7 +53,7 @@ wss.on('connection', (ws) => {
                                 userClientMap[user].send(JSON.stringify({
                                     message: data.body.message,
                                     sender: senderName,
-                                    chat: data.body.chatId
+                                    chat: data.body.chat
                                 }));
                             };
                         });
