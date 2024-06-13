@@ -12,9 +12,18 @@ wss.on('connection', (ws) => {
         switch (data.req_type) {
             case "authentication":
                 axios.post(`https://messagehandlers.azurewebsites.net/api/authorize?tokenString=${data.body.token}`).then((id) => {
-                    if (!id) {ws.close(); console.log("faker smh"); return};
+                    if (!id) {
+                        ws.send(JSON.stringify({
+                            confirmation: "denied"
+                        }))
+                        ws.close();
+                        console.log("faker smh");
+                        return;
+                    };
                     userClientMap[id.data] = ws;
-                    ws.send("authenticated"); // temp message; do something real here
+                    ws.send(JSON.stringify({
+                        confimation: "confirmed"
+                    })); // temp message; do something real here
                 });
                 break;
             case "send message":

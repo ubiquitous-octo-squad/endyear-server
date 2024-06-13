@@ -4,7 +4,7 @@ const ws = require('ws');
 const dotenv = require('dotenv');
 dotenv.config();
 
-//const client = new ws.WebSocket(process.env.WS_SERVER); // actual server
+//const client = new ws.WebSocket("wss://endyear-server.onrender.com"); // actual server
 const client = new ws.WebSocket("ws://127.0.0.1:443"); // localhost test server
 
 let token = "74b619eb4365d5d39dd0d1c37d17683096767e70";
